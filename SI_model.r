@@ -76,3 +76,44 @@ Total     501.000  1.000
 S -> I     15.648     NA
 ------------------------------
   
+
+  
+# New model    
+
+  # Simulation
+# SIR Model with Demography
+  
+  # param.dcm: parameters for the recovery rate, birth rate, and state-specific death rates
+# init.dcm: number of initially recovered
+# control.dcm: dt:  model results in fractional time units
+
+  
+param <- param.dcm(inf.prob = 0.2, act.rate = 1, rec.rate = 1/20,
+                     a.rate = 1/95, ds.rate = 1/100, di.rate = 1/80, dr.rate = 1/100)
+init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
+control <- control.dcm(type = "SIR", nsteps = 500, dt = 0.5)
+mod <- dcm(param, init, control)
+
+# Plotting
+
+# popfrac=FALSE argument plots the compartment size (rather than prevalence) 
+# alpha increases the transparency of the lines for better visualization
+# By default, the plot function will plot the prevalences for all compartments in the model, 
+# but in the right plot we override that using the
+# si.flow - y argument to specify that disease incidence 
+
+# legend options are set using the legend
+# specify a single line color, a vector of colors, or a color palette using the col
+par(mar = c(3.2, 3, 2, 1), mgp = c(2, 1, 0), mfrow = c(1, 2))
+plot(mod, popfrac = FALSE, alpha = 0.5,
+     lwd = 4, main = "Compartment Sizes")
+plot(mod, y = "si.flow", lwd = 4, col = "firebrick",
+     main = "Disease Incidence", legend = "n")
+
+# Summaries
+# Previously, the time-specific model values were calculated with the summary function. To visualize that information, use the comp_plot function. 
+# This plot provides astate-flow diagram that is often presented in the epidemiological literature. 
+
+par(mfrow = c(1, 1))
+comp_plot(mod, at = 50, digits = 1)
+
